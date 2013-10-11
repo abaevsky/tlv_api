@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include "tlv.h"
 
+
 /*
 **************************************************
-This example of the second space EEPROM
+	This example of the second space EEPROM
 **************************************************
 */
-char a[] = { 0x00, 0x89, 0x00,
+const unsigned char a[] = { 0x00, 0x89, 0x00,
 	0x03, 0x05, 
 		0xc0, 0xc1, 0xc2, 0xc3, 0xc4,
 	
@@ -19,8 +20,8 @@ char a[] = { 0x00, 0x89, 0x00,
 		0x03, 0x02,
 			0x01, 0x02,
 	
-	0x02, 0x80,
-		0x14, 0xc1, 0xc2,0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca,
+	0x02, 0x80, 0x14, 
+		0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca,
 	
 	0x13, 0x24 , 
 	
@@ -31,7 +32,7 @@ char a[] = { 0x00, 0x89, 0x00,
 			0xc1, 0xc2, 0xc3, 0xc4, 
 	
 		0x02, 0x80, 0x14, 
-			0xbb, 0xc2,0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0x3c5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 
+			0xbb, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0x35, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 
 	
 	0x03, 0x02, 
 		0xc1, 0xc2, 
@@ -49,7 +50,7 @@ char a[] = { 0x00, 0x89, 0x00,
 		0xc0, 0xc1, 0xc2, 0xc3, 0xc4,
 		
 	0x03, 0x02, 
-		0xc1, 0xc2, 
+		0xa1, 0xa2, 
 		
 	0x04, 0x08,
 		0x05, 0x02, 
@@ -62,36 +63,63 @@ char a[] = { 0x00, 0x89, 0x00,
 		
 	0x03, 0x05, 
 		0xc0, 0xc1, 0xc2, 0xc3, 0xc4};
+		
+		
+/*
+******************************************************************************************		
+	These constants are expected to answer queries functions.
+		You can check them out yourself	
+******************************************************************************************		
+*/
+		
+		
+const unsigned char answer1[] = {0xd1, 0xb2, 0xa3, 0xc4};
+const unsigned char answer2[] = {0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca};
+const unsigned char answer3_1[] = {0xc0, 0xc1, 0xc2, 0xc3, 0xc4};		
+const unsigned char answer3_2[] ={0xc1, 0xc2};		
+const unsigned char answer3_3[] ={0xc0, 0xc1, 0xc2, 0xc3, 0xc4};	
+const unsigned char answer3_4[] ={0xa1, 0xa2};	
+const unsigned char answer3_5[] ={0xc0, 0xc1, 0xc2, 0xc3, 0xc4};	
+const int answer4 = 5;
+const unsigned char answer6[] = {0x03, 0x05, 
+						0xc0, 0xc1, 0xc2, 0xc3, 0xc4,
+					0x01, 0x04, 
+						0xc1, 0xc2, 0xc3, 0xc4, 
+					0x02, 0x80, 0x14, 
+						0xbb, 0xc2,0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca};
+
+const char answer7[] = {0xbb, 0xc2,0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca};
+		
 /*	
-this variable will be used to store the key of the field		
+	this variable will be used to store the key of the field		
 */
 unsigned char key;
 
 /*
-This variable is the absolute offset of the search. 
-The first time is set to 0, the value returned by the subsequent use		
+	This variable is the absolute offset of the search. 
+	The first time is set to 0, the value returned by the subsequent use		
 */		
 int offset;		
 
 /*
-A pointer to the TLV structure.
-Can be both external or internal
+	A pointer to the TLV structure.
+	Can be both external or internal
 */
-void *pointer_area;		
+const void *pointer_area;		
 		
 /*
-The size of the internal TLv structure. 
-For external structure must be set to 0	
+	The size of the internal TLv structure. 
+	For external structure must be set to 0	
 */		
 int size_area;
 
 /*
-In this variable returns a pointer to the value of the field
+	In this variable returns a pointer to the value of the field
 */
-void *pointer_value;
+const void *pointer_value;
 
 /*
-In this variable returns the size of value of the field
+	In this variable returns the size of value of the field
 */
 int size_value;
 
@@ -101,7 +129,7 @@ int i;
 
 /*
 ***********************************************************
-This is suport function. It displays the data field
+	This is suport function. It displays the data field
 ***********************************************************
 */
 
@@ -134,14 +162,14 @@ main (void)
 	
 /*
 ***************************************************************
-Let's find first fild by key 0x01
-Since we are looking for in the external structures, the size of the field is affixed 0
+	Let's find first fild by key 0x01
+	Since we are looking for in the external structures, the size of the field is affixed 0
 	
-We can find the field or no
-If the field is found, the function returns 1 and will change output arguments
-If the field will not be found, the function returns zero and nothing else will do
+	We can find the field or no
+	If the field is found, the function returns 1 and will change output arguments
+	If the field will not be found, the function returns zero and nothing else will do
 	
-If that's so, call the display of the result when the 1 returns
+	If that's so, call the display of the result when the 1 returns
 
 **************************************************************
 */	
@@ -157,10 +185,10 @@ If that's so, call the display of the result when the 1 returns
 	
 /*
 ****************************************************************************************
-Ok. Now let's find first fild by key 0x02
-This field is remarkable in that it has a long record format size of value.
-If we want to search from the beginning of the recording, we have to put down the offset to zero.
-the other parameters remain the same as they are already established and have not changed	
+	Ok. Now let's find first fild by key 0x02
+	This field is remarkable in that it has a long record format size of value.
+	If we want to search from the beginning of the recording, we have to put down the offset to zero.
+	the other parameters remain the same as they are already established and have not changed	
 	
 ****************************************************************************************
 */
@@ -176,10 +204,10 @@ the other parameters remain the same as they are already established and have no
 	
 /*
 *********************************************************************************************************
-Next we will try to look for a field in a loop.
-There are many fields with a key 0x03, let's find them.
-It does not require any additional steps. Just need to take care to use 
-the result of each iteration. In our case, we simply display found on screen
+	Next we will try to look for a field in a loop.
+	There are many fields with a key 0x03, let's find them.
+	It does not require any additional steps. Just need to take care to use 
+	the result of each iteration. In our case, we simply display found on screen
 *********************************************************************************************************
 */
 	offset = 0;
@@ -198,10 +226,10 @@ the result of each iteration. In our case, we simply display found on screen
 	
 /*
 **********************************************************************************************************	
-It's good. 	But what if we do not need the values of fields,
-and we want to know just how many of these fields?
-Let's try another function. This function returns the number 
-of fields found on this level. It does not address the embedded structure	
+	It's good. 	But what if we do not need the values of fields,
+	and we want to know just how many of these fields?
+	Let's try another function. This function returns the number 
+	of fields found on this level. It does not address the embedded structure	
 **********************************************************************************************************
 */
 	
@@ -211,13 +239,13 @@ of fields found on this level. It does not address the embedded structure
 	
 /*
 *************************************************************************************************	
-There is one useful function - the unconditional listing.
-The variable "key" is used to return a value. The input is not important.	
-The function will cycle through a field one by one to return the unit. 
-If the offset is closer to the end of the structure, the function returns zero, 
-and will not make any other changes.	
-Otherwise, this function is similar to the search function
-Let's scroll through the field of external structures
+	There is one useful function - the unconditional listing.
+	The variable "key" is used to return a value. The input is not important.	
+	The function will cycle through a field one by one to return the unit. 
+	If the offset is closer to the end of the structure, the function returns zero, 
+	and will not make any other changes.	
+	Otherwise, this function is similar to the search function
+	Let's scroll through the field of external structures
 
 *******************************************************************************
 */	
@@ -236,10 +264,10 @@ Let's scroll through the field of external structures
 	
 /*
 ******************************************************************************************
-Now we have enough experience with external entities. Let's take a look inside
-Working with the internal structures of the dispensation as well as with external.
-The only difference - you need to specify the size of the area.
-Let's find a field with a key 0x13 and list its contents
+	Now we have enough experience with external entities. Let's take a look inside
+	Working with the internal structures of the dispensation as well as with external.
+	The only difference - you need to specify the size of the area.
+	Let's find a field with a key 0x13 and list its contents
 ******************************************************************************************
 */
 	key = 0x13;
@@ -263,9 +291,9 @@ Let's find a field with a key 0x13 and list its contents
 	printf("\n");
 /*
 ******************************************************************************************
-Search in the internal structures arranged in exactly the same.
-We have already established a pointer to the value of the field 13 and indicated its size.		
-Let's find inside the field 0x02		
+	Search in the internal structures arranged in exactly the same.
+	We have already established a pointer to the value of the field 13 and indicated its size.		
+	Let's find inside the field 0x02		
 ******************************************************************************************
 */		
 		
@@ -278,10 +306,11 @@ Let's find inside the field 0x02
 	printf ("\n");
 /*
 *************************************************************************************************	
-Now we use all the features of our library.
-Caution: these functions are not able to control the accuracy of TVL structures
-Attempt to divide the indivisible value of the field can lead to an error of memory. 
-Responsibility for proper use is on the side of the call
+	Now we use all the features of our library.
+	Caution: these functions are not able to control the accuracy of TVL structures
+	Attempt to divide the indivisible value of the field can lead to an error of memory. 
+	Responsibility for proper use is on the side of the call
 ************************************************************************************************
 */
+return 0;
 }

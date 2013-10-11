@@ -6,10 +6,10 @@ Internal function. She does not give out
 */
 
 inline static int 
-tlv_next (void *data, int *shift, char *key, void **value, int *count)
+tlv_next (const void *data, int *shift, unsigned char *key, const void **value, int *count)
 {
 	char key_in = *key;
-	void *k;
+	const void *k;
 	int i, j;
 	
 	j = *shift;
@@ -56,10 +56,10 @@ length - The return value of the field size.
 */
 
 inline static int 														
-tlv_find (void *data, int size, int *offset, char key, void **value, int *length)                  
+tlv_find (const void *data, int size, int *offset, unsigned char key, const void **value, int *length)                  
 {                                                                                                                                    
 	int ln;  
-	char tmp;
+	unsigned char tmp;
 	
 	if (size == 0) {                                                                                                        
 		ln = *(unsigned short *) (data + 1);                                                   
@@ -94,11 +94,11 @@ key - Type the required field
 
 
 inline static int 
-tlv_count (void *data, int size, char key) {
+tlv_count (const void *data, int size, unsigned char key) {
 	int offset = 0, j = 0;
 	int i, c, length;
-	char temp;
-	void *value;
+	unsigned char temp;
+	const void *value;
 	
 	if (size == 0) {
 		length = * (unsigned short *) (data + 1);
@@ -141,7 +141,7 @@ length - The return value of the field size.
 
 
 inline static int
-tlv_list (void *data, int size, int *offset, char *key, void **value, int *length)     
+tlv_list (const void *data, int size, int *offset, unsigned char *key, const void **value, int *length)     
 {
 	int ln;      
 	
